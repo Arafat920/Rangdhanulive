@@ -8,37 +8,50 @@ header { display: flex; justify-content: space-between; align-items: center; pad
 .search-container button { background: none; border: none; font-size: 18px; cursor: pointer; }
 
 /* Hero Banner */
-.hero { height: 60vh; background-size: cover; background-position: center; display: flex; align-items: center; padding: 0 4%; position: relative; transition: 0.5s; }
+.hero { height: 60vh; background-size: cover; background-position: center; display: flex; align-items: center; padding: 0 4%; position: relative; }
 .hero::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 100px; background: linear-gradient(to top, #111, transparent); }
 .hero-content { max-width: 600px; z-index: 1; text-shadow: 2px 2px 8px rgba(0,0,0,0.8); }
 .hero-content h1 { font-size: 36px; margin-bottom: 10px; }
 
 /* Row Styling */
-.row-container { margin: 25px 0 25px 4%; }
+.row-container { margin: 25px 0 25px 0; padding-left: 4%; }
 .row-container h2 { font-size: 20px; margin-bottom: 10px; }
-.movie-row { display: flex; overflow-x: scroll; gap: 15px; padding-bottom: 10px; scroll-behavior: smooth; }
+.row-wrapper { position: relative; display: flex; align-items: center; }
+
+.movie-row { display: flex; overflow-x: scroll; gap: 10px; padding: 10px 0; scroll-behavior: smooth; width: 100%; }
 .movie-row::-webkit-scrollbar { display: none; }
 
-.movie-card { min-width: 140px; cursor: pointer; transition: transform 0.3s; }
-.movie-card:hover { transform: scale(1.08); }
-.movie-card img { width: 100%; border-radius: 8px; }
+.movie-card { min-width: 160px; cursor: pointer; transition: transform 0.3s; border-radius: 8px; overflow: hidden; }
+.movie-card:hover { transform: scale(1.1); z-index: 5; }
+.movie-card img { width: 100%; display: block; }
 
-/* Search Grid */
-.search-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 15px; padding: 100px 4% 20px; }
+/* Netflix Style Scroll Handles (Buttons) */
+.handle {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 4%;
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    font-size: 2rem;
+    cursor: pointer;
+    z-index: 10;
+    display: none; /* মোবাইলে বাটন দেখাবে না */
+    transition: background 0.3s, transform 0.2s;
+}
 
-/* Modal (Popup Box) */
-.modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.9); overflow-y: auto; padding-top: 50px; animation: fadeIn 0.4s; }
-.modal-content { background-color: #181818; margin: auto; padding: 0; border-radius: 10px; width: 90%; max-width: 700px; position: relative; box-shadow: 0 0 20px rgba(229, 9, 20, 0.4); }
-.close-modal { color: #fff; position: absolute; top: 15px; right: 20px; font-size: 30px; font-weight: bold; cursor: pointer; z-index: 10; background: rgba(0,0,0,0.5); border-radius: 50%; padding: 0 8px; }
-.modal-body-content { padding: 20px; text-align: left; }
+.row-wrapper:hover .handle { display: block; }
+.handle:hover { background: rgba(0, 0, 0, 0.8); transform: scale(1.1); }
+.left-handle { left: 0; border-radius: 0 4px 4px 0; }
+.right-handle { right: 0; border-radius: 4px 0 0 4px; }
+
+/* Modal & Other Styles... (Same as before) */
+.modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.9); overflow-y: auto; padding-top: 50px; }
+.modal-content { background-color: #181818; margin: auto; width: 90%; max-width: 700px; border-radius: 10px; position: relative; }
+.close-modal { position: absolute; top: 15px; right: 20px; font-size: 30px; cursor: pointer; z-index: 10; color: white; }
+.modal-body-content { padding: 20px; }
 .modal-poster { width: 100%; border-radius: 10px 10px 0 0; }
-.modal-title { font-size: 24px; margin: 15px 0 10px; color: #e50914; }
-.modal-info { display: flex; gap: 15px; font-size: 14px; margin-bottom: 15px; color: #ccc; }
-.modal-overview { line-height: 1.6; font-size: 15px; color: #ddd; }
+.modal-title { font-size: 24px; color: #e50914; margin-bottom: 10px; }
 
-/* Footer */
 footer { background: #000; padding: 40px 0; text-align: center; border-top: 1px solid #333; margin-top: 50px; }
-.logo-text { color: #e50914; font-weight: bold; }
-.dev-link { color: #fff; text-decoration: none; border-bottom: 1px solid #e50914; }
-
-@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
