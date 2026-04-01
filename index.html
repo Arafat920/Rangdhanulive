@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/18212/18212624.png" type="image/png">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rangdhanu Live - Netflix Style</title>
+    <title>Rangdhanu Live - Pro</title>
+    <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/18212/18212624.png" type="image/png">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -16,45 +16,42 @@
         </div>
     </header>
 
-    <!-- বড় ব্যানার (Hero Section) -->
     <section id="hero" class="hero">
         <div id="heroContent" class="hero-content"></div>
     </section>
 
     <main id="mainContent">
-        <!-- মুভি ক্যাটাগরিগুলো এখানে আসবে -->
         <div class="row-container">
             <h2>Trending Now</h2>
             <div id="trendingRow" class="movie-row"></div>
         </div>
-
         <div class="row-container">
             <h2>Top Rated</h2>
             <div id="topRatedRow" class="movie-row"></div>
         </div>
-
         <div class="row-container">
             <h2>Action Thriller</h2>
             <div id="actionRow" class="movie-row"></div>
         </div>
     </main>
 
-    <!-- সার্চ রেজাল্ট দেখানোর জন্য আলাদা জায়গা -->
     <div id="searchResults" class="search-grid" style="display:none;"></div>
 
-    <script src="script.js"></script>
+    <!-- Movie Details Modal (পপ-আপ বক্স) -->
+    <div id="movieModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <div id="modalDetails"></div>
+        </div>
+    </div>
 
-<!-- Footer Section -->
     <footer>
         <div class="footer-content">
-            <p>&copy; 2024 <span class="logo-text">RANGDHANU LIVE</span>. All Rights Reserved.</p>
+            <p>&copy; 2025 <span class="logo-text">RANGDHANU LIVE</span>. All Rights Reserved.</p>
             <p>Developed with ❤️ by <a href="https://github.com/Arafat920" target="_blank" class="dev-link">Arafat</a></p>
-            <div class="footer-links">
-                <a href="#">Privacy Policy</a>
-                <a href="#">Terms of Use</a>
-                <a href="#">Contact Us</a>
-            </div>
         </div>
     </footer>
+
+    <script src="script.js"></script>
 </body>
 </html>
