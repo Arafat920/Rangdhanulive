@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rangdhanu Live - Pro</title>
+    <title>Rangdhanu Live - Netflix Style</title>
     <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/18212/18212624.png" type="image/png">
     <link rel="stylesheet" href="style.css">
 </head>
@@ -21,23 +21,39 @@
     </section>
 
     <main id="mainContent">
+        <!-- Trending Row -->
         <div class="row-container">
             <h2>Trending Now</h2>
-            <div id="trendingRow" class="movie-row"></div>
+            <div class="row-wrapper">
+                <button class="handle left-handle" onclick="scrollRow('trendingRow', -1)">&#10094;</button>
+                <div id="trendingRow" class="movie-row"></div>
+                <button class="handle right-handle" onclick="scrollRow('trendingRow', 1)">&#10095;</button>
+            </div>
         </div>
+
+        <!-- Top Rated Row -->
         <div class="row-container">
             <h2>Top Rated</h2>
-            <div id="topRatedRow" class="movie-row"></div>
+            <div class="row-wrapper">
+                <button class="handle left-handle" onclick="scrollRow('topRatedRow', -1)">&#10094;</button>
+                <div id="topRatedRow" class="movie-row"></div>
+                <button class="handle right-handle" onclick="scrollRow('topRatedRow', 1)">&#10095;</button>
+            </div>
         </div>
+
+        <!-- Action Row -->
         <div class="row-container">
             <h2>Action Thriller</h2>
-            <div id="actionRow" class="movie-row"></div>
+            <div class="row-wrapper">
+                <button class="handle left-handle" onclick="scrollRow('actionRow', -1)">&#10094;</button>
+                <div id="actionRow" class="movie-row"></div>
+                <button class="handle right-handle" onclick="scrollRow('actionRow', 1)">&#10095;</button>
+            </div>
         </div>
     </main>
 
     <div id="searchResults" class="search-grid" style="display:none;"></div>
 
-    <!-- Movie Details Modal (পপ-আপ বক্স) -->
     <div id="movieModal" class="modal">
         <div class="modal-content">
             <span class="close-modal">&times;</span>
