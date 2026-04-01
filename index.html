@@ -1,1 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rangdhanu Live - Netflix Style</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header id="header">
+        <h1 class="logo" onclick="location.reload()">RANGDHANU</h1>
+        <div class="search-container">
+            <input type="text" id="searchInput" placeholder="Search movies...">
+            <button id="searchBtn">🔍</button>
+        </div>
+    </header>
 
+    <!-- বড় ব্যানার (Hero Section) -->
+    <section id="hero" class="hero">
+        <div id="heroContent" class="hero-content"></div>
+    </section>
+
+    <main id="mainContent">
+        <!-- মুভি ক্যাটাগরিগুলো এখানে আসবে -->
+        <div class="row-container">
+            <h2>Trending Now</h2>
+            <div id="trendingRow" class="movie-row"></div>
+        </div>
+
+        <div class="row-container">
+            <h2>Top Rated</h2>
+            <div id="topRatedRow" class="movie-row"></div>
+        </div>
+
+        <div class="row-container">
+            <h2>Action Thriller</h2>
+            <div id="actionRow" class="movie-row"></div>
+        </div>
+    </main>
+
+    <!-- সার্চ রেজাল্ট দেখানোর জন্য আলাদা জায়গা -->
+    <div id="searchResults" class="search-grid" style="display:none;"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>
