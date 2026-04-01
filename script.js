@@ -18,7 +18,6 @@ async function fetchMovies(url, elementId, isHero = false) {
     const res = await fetch(url);
     const data = await res.json();
     const movies = data.results;
-
     if (isHero) setupHero(movies[0]); 
     displayMovies(movies, elementId);
 }
@@ -30,7 +29,7 @@ function setupHero(movie) {
     heroContent.innerHTML = `
         <h1>${movie.title}</h1>
         <p>${movie.overview.substring(0, 120)}...</p>
-        <button onclick="getTrailer(${movie.id})" style="margin-top:10px; padding:10px 20px; background:#e50914; color:white; border:none; cursor:pointer; font-weight:bold; border-radius:4px;">▶ Play Trailer</button>
+        <button onclick="showMovieDetails(${movie.id})" style="margin-top:10px; padding:10px 20px; background:#e50914; color:white; border:none; cursor:pointer; font-weight:bold; border-radius:4px;">View Info</button>
     `;
 }
 
@@ -39,14 +38,50 @@ function displayMovies(movies, elementId) {
     container.innerHTML = '';
     movies.forEach(movie => {
         if(movie.poster_path) {
-            const img = document.createElement('div');
-            img.classList.add('movie-card');
-            img.innerHTML = `<img src="${IMG_PATH + movie.poster_path}" alt="${movie.title}" onclick="getTrailer(${movie.id})">`;
-            container.appendChild(img);
+            const card = document.createElement('div');
+            card.classList.add('movie-card');
+            card.innerHTML = `<img src="${IMG_PATH + movie.poster_path}" alt="${movie.title}" onclick="showMovieDetails(${movie.id})">`;
+            container.appendChild(card);
         }
     });
 }
 
+// মুভির বিস্তারিত পপ-আপ দেখানোর ফাংশন
+async function showMovieDetails(id) {
+    const res = await fetch(`https://api.themoviedb.org/3/movie/${id}?api_key=${API_KEY}`);
+    const movie = await res.json();
+    
+    const modal = document.getElementById('movieModal');
+    const modalDetails = document.getElementById('modalDetails');
+    
+    modalDetails.innerHTML = `
+        <img class="modal-poster" src="${IMG_PATH + (movie.backdrop_path || movie.poster_path)}" alt="${movie.title}">
+        <div class="modal-body-content">
+            <h2 class="modal-title">${movie.title}</h2>
+            <div class="modal-info">
+                <span>📅 ${movie.release_date}</span>
+                <span>⭐ ${movie.vote_average.toFixed(1)}</span>
+                <span>⏳ ${movie.runtime} min</span>
+            </div>
+            <p class="modal-overview">${movie.overview}</p>
+            <button onclick="getTrailer(${movie.id})" style="margin-top:20px; padding:12px 25px; background:#e50914; color:white; border:none; cursor:pointer; font-weight:bold; border-radius:4px; width:100%;">▶ Watch Trailer</button>
+        </div>
+    `;
+    modal.style.display = 'block';
+}
+
+// পপ-আপ বন্ধ করা
+document.querySelector('.close-modal').onclick = () => {
+    document.getElementById('movieModal').style.display = 'none';
+};
+
+window.onclick = (event) => {
+    if (event.target == document.getElementById('movieModal')) {
+        document.getElementById('movieModal').style.display = 'none';
+    }
+};
+
+// সার্চ ফাংশন
 document.getElementById('searchBtn').addEventListener('click', async () => {
     const query = document.getElementById('searchInput').value;
     if (query) {
@@ -55,17 +90,15 @@ document.getElementById('searchBtn').addEventListener('click', async () => {
         const main = document.getElementById('mainContent');
         const hero = document.getElementById('hero');
         const searchResults = document.getElementById('searchResults');
-
         main.style.display = 'none';
         hero.style.display = 'none';
         searchResults.style.display = 'grid';
-        
         searchResults.innerHTML = '';
         data.results.forEach(movie => {
             if(movie.poster_path) {
                 const card = document.createElement('div');
                 card.classList.add('movie-card');
-                card.innerHTML = `<img src="${IMG_PATH + movie.poster_path}" alt="${movie.title}" onclick="getTrailer(${movie.id})">`;
+                card.innerHTML = `<img src="${IMG_PATH + movie.poster_path}" alt="${movie.title}" onclick="showMovieDetails(${movie.id})">`;
                 searchResults.appendChild(card);
             }
         });
