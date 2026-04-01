@@ -3,16 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rangdhanu Live - Netflix Style</title>
+    <title>Rangdhanu Live - OTT Platform</title>
     <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/18212/18212624.png" type="image/png">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <header id="header">
-        <h1 class="logo" onclick="location.reload()">RANGDHANU</h1>
-        <div class="search-container">
-            <input type="text" id="searchInput" placeholder="Search movies...">
-            <button id="searchBtn">🔍</button>
+        <div class="header-left">
+            <h1 class="logo" onclick="loadContent('home')">RANGDHANU</h1>
+            <nav class="nav-menu">
+                <ul>
+                    <li onclick="loadContent('home')">Home</li>
+                    <li onclick="loadContent('tv')">TV Shows</li>
+                    <li onclick="loadContent('movies')">Movies</li>
+                    <li onclick="loadContent('latest')">Latest</li>
+                </ul>
+            </nav>
+        </div>
+        <div class="header-right">
+            <div class="search-container">
+                <input type="text" id="searchInput" placeholder="Search...">
+                <button id="searchBtn">🔍</button>
+            </div>
         </div>
     </header>
 
@@ -21,35 +33,8 @@
     </section>
 
     <main id="mainContent">
-        <!-- Trending Row -->
-        <div class="row-container">
-            <h2>Trending Now</h2>
-            <div class="row-wrapper">
-                <button class="handle left-handle" onclick="scrollRow('trendingRow', -1)">&#10094;</button>
-                <div id="trendingRow" class="movie-row"></div>
-                <button class="handle right-handle" onclick="scrollRow('trendingRow', 1)">&#10095;</button>
-            </div>
-        </div>
-
-        <!-- Top Rated Row -->
-        <div class="row-container">
-            <h2>Top Rated</h2>
-            <div class="row-wrapper">
-                <button class="handle left-handle" onclick="scrollRow('topRatedRow', -1)">&#10094;</button>
-                <div id="topRatedRow" class="movie-row"></div>
-                <button class="handle right-handle" onclick="scrollRow('topRatedRow', 1)">&#10095;</button>
-            </div>
-        </div>
-
-        <!-- Action Row -->
-        <div class="row-container">
-            <h2>Action Thriller</h2>
-            <div class="row-wrapper">
-                <button class="handle left-handle" onclick="scrollRow('actionRow', -1)">&#10094;</button>
-                <div id="actionRow" class="movie-row"></div>
-                <button class="handle right-handle" onclick="scrollRow('actionRow', 1)">&#10095;</button>
-            </div>
-        </div>
+        <!-- রোগুলো ডায়নামিকভাবে আসবে -->
+        <div id="rowsContainer"></div>
     </main>
 
     <div id="searchResults" class="search-grid" style="display:none;"></div>
