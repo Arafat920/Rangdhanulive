@@ -44,42 +44,19 @@ function displayMovies(movies, elementId) {
             container.appendChild(card);
         }
     });
-    // PC এর জন্য ড্র্যাগ এবং হুইল স্ক্রল সক্রিয় করা
-    enablePCScroll(container);
 }
 
-// PC এর জন্য মাউস দিয়ে ড্র্যাগ এবং হুইল স্ক্রল করার ফাংশন
-function enablePCScroll(slider) {
-    let isDown = false;
-    let startDate;
-    let startX;
-    let scrollLeft;
-
-    // মাউস হুইল দিয়ে ডানে-বামে স্ক্রল (Shift ছাড়া)
-    slider.addEventListener('wheel', (e) => {
-        e.preventDefault();
-        slider.scrollLeft += e.deltaY;
-    });
-
-    // ক্লিক করে ড্র্যাগ করা (Swipe with Mouse)
-    slider.addEventListener('mousedown', (e) => {
-        isDown = true;
-        startDate = new Date();
-        startX = e.pageX - slider.offsetLeft;
-        scrollLeft = slider.scrollLeft;
-    });
-    slider.addEventListener('mouseleave', () => { isDown = false; });
-    slider.addEventListener('mouseup', () => { isDown = false; });
-    slider.addEventListener('mousemove', (e) => {
-        if (!isDown) return;
-        e.preventDefault();
-        const x = e.pageX - slider.offsetLeft;
-        const walk = (x - startX) * 2; // স্ক্রলিং স্পিড
-        slider.scrollLeft = scrollLeft - walk;
+// বাটন দিয়ে স্ক্রল করার ফাংশন (Netflix Style)
+function scrollRow(rowId, direction) {
+    const row = document.getElementById(rowId);
+    const scrollAmount = row.clientWidth * 0.8; // স্ক্রিনের ৮০% পর্যন্ত সরবে
+    row.scrollBy({
+        left: direction * scrollAmount,
+        behavior: 'smooth'
     });
 }
 
-// মুভির বিস্তারিত পপ-আপ (Modal)
+// মুভির বিস্তারিত পপ-আপ
 async function showMovieDetails(id) {
     const res = await fetch(`https://api.themoviedb.org/3/movie/${id}?api_key=${API_KEY}`);
     const movie = await res.json();
@@ -91,11 +68,9 @@ async function showMovieDetails(id) {
         <div class="modal-body-content">
             <h2 class="modal-title">${movie.title}</h2>
             <div class="modal-info">
-                <span>📅 ${movie.release_date}</span>
-                <span>⭐ ${movie.vote_average.toFixed(1)}</span>
-                <span>⏳ ${movie.runtime} min</span>
+                <span style="color:#aaa;">📅 ${movie.release_date}  |  ⭐ ${movie.vote_average.toFixed(1)}  |  ⏳ ${movie.runtime} min</span>
             </div>
-            <p class="modal-overview">${movie.overview}</p>
+            <p class="modal-overview" style="color:#ddd; line-height:1.6;">${movie.overview}</p>
             <button onclick="getTrailer(${movie.id})" style="margin-top:20px; padding:12px 25px; background:#e50914; color:white; border:none; cursor:pointer; font-weight:bold; border-radius:4px; width:100%;">▶ Watch Trailer</button>
         </div>
     `;
