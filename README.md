@@ -1,2 +1,3 @@
-# Rangdhanulive
-OTT Streaming Website 
+https://arafat920.github.io/Rangdhanulive/
+
+https://rangdhanulive.vercel.app/
