@@ -44,13 +44,45 @@ function displayMovies(movies, elementId) {
             container.appendChild(card);
         }
     });
+    // PC এর জন্য ড্র্যাগ এবং হুইল স্ক্রল সক্রিয় করা
+    enablePCScroll(container);
 }
 
-// মুভির বিস্তারিত পপ-আপ দেখানোর ফাংশন
+// PC এর জন্য মাউস দিয়ে ড্র্যাগ এবং হুইল স্ক্রল করার ফাংশন
+function enablePCScroll(slider) {
+    let isDown = false;
+    let startDate;
+    let startX;
+    let scrollLeft;
+
+    // মাউস হুইল দিয়ে ডানে-বামে স্ক্রল (Shift ছাড়া)
+    slider.addEventListener('wheel', (e) => {
+        e.preventDefault();
+        slider.scrollLeft += e.deltaY;
+    });
+
+    // ক্লিক করে ড্র্যাগ করা (Swipe with Mouse)
+    slider.addEventListener('mousedown', (e) => {
+        isDown = true;
+        startDate = new Date();
+        startX = e.pageX - slider.offsetLeft;
+        scrollLeft = slider.scrollLeft;
+    });
+    slider.addEventListener('mouseleave', () => { isDown = false; });
+    slider.addEventListener('mouseup', () => { isDown = false; });
+    slider.addEventListener('mousemove', (e) => {
+        if (!isDown) return;
+        e.preventDefault();
+        const x = e.pageX - slider.offsetLeft;
+        const walk = (x - startX) * 2; // স্ক্রলিং স্পিড
+        slider.scrollLeft = scrollLeft - walk;
+    });
+}
+
+// মুভির বিস্তারিত পপ-আপ (Modal)
 async function showMovieDetails(id) {
     const res = await fetch(`https://api.themoviedb.org/3/movie/${id}?api_key=${API_KEY}`);
     const movie = await res.json();
-    
     const modal = document.getElementById('movieModal');
     const modalDetails = document.getElementById('modalDetails');
     
@@ -70,16 +102,8 @@ async function showMovieDetails(id) {
     modal.style.display = 'block';
 }
 
-// পপ-আপ বন্ধ করা
-document.querySelector('.close-modal').onclick = () => {
-    document.getElementById('movieModal').style.display = 'none';
-};
-
-window.onclick = (event) => {
-    if (event.target == document.getElementById('movieModal')) {
-        document.getElementById('movieModal').style.display = 'none';
-    }
-};
+document.querySelector('.close-modal').onclick = () => { document.getElementById('movieModal').style.display = 'none'; };
+window.onclick = (e) => { if (e.target == document.getElementById('movieModal')) document.getElementById('movieModal').style.display = 'none'; };
 
 // সার্চ ফাংশন
 document.getElementById('searchBtn').addEventListener('click', async () => {
