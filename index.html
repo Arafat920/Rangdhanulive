@@ -3,54 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rangdhanu Live - OTT Platform</title>
-    <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/18212/18212624.png" type="image/png">
+    <title>Rangdhanu - Apple TV Edition</title>
+    <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/18212/18212624.png">
     <link rel="stylesheet" href="style.css">
+    <!-- Google Fonts for Apple-like look -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
 </head>
 <body>
-    <header id="header">
-        <div class="header-left">
-            <h1 class="logo" onclick="loadContent('home')">RANGDHANU</h1>
-            <nav class="nav-menu">
-    <ul>
-        <li id="menu-home" onclick="loadContent('home')">Home</li>
-        <li id="menu-tv" onclick="loadContent('tv')">TV Shows</li>
-        <li id="menu-movies" onclick="loadContent('movies')">Movies</li>
-        <li id="menu-latest" onclick="loadContent('latest')">Latest</li>
-    </ul>
+    <header id="navbar" class="glass-nav">
+        <div class="nav-content">
+            <h1 class="logo" onclick="loadPage('home')">RANGDHANU</h1>
+            <nav class="main-nav">
+                <span id="nav-home" onclick="loadPage('home')" class="active">Home</span>
+                <span id="nav-tv" onclick="loadPage('tv')">TV Shows</span>
+                <span id="nav-movies" onclick="loadPage('movies')">Movies</span>
+                <span id="nav-mylist" onclick="loadPage('mylist')">My List</span>
             </nav>
-        </div>
-        <div class="header-right">
-            <div class="search-container">
-                <input type="text" id="searchInput" placeholder="Search...">
-                <button id="searchBtn">🔍</button>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" placeholder="Search movies, shows...">
+                <button id="voiceBtn" class="voice-btn" title="Voice Search">🎤</button>
+                <button id="searchBtn" class="search-btn">🔍</button>
             </div>
         </div>
     </header>
 
-    <section id="hero" class="hero">
-        <div id="heroContent" class="hero-content"></div>
-    </section>
+    <div id="hero" class="hero-section">
+        <div id="heroContent" class="hero-inner"></div>
+    </div>
 
-    <main id="mainContent">
-        <!-- রোগুলো ডায়নামিকভাবে আসবে -->
+    <main id="appContent">
         <div id="rowsContainer"></div>
     </main>
 
-    <div id="searchResults" class="search-grid" style="display:none;"></div>
+    <div id="searchResults" class="search-overlay glass-modal" style="display:none;">
+        <button class="close-search" onclick="closeSearch()">✕</button>
+        <div id="searchGrid" class="search-grid"></div>
+    </div>
 
-    <div id="movieModal" class="modal">
-        <div class="modal-content">
-            <span class="close-modal">&times;</span>
+    <!-- Movie Detail Modal -->
+    <div id="detailModal" class="modal-overlay">
+        <div class="modal-content glass-card">
+            <span class="close-modal" onclick="closeModal()">✕</span>
             <div id="modalDetails"></div>
         </div>
     </div>
 
-    <footer>
-        <div class="footer-content">
-            <p>&copy; 2025 <span class="logo-text">RANGDHANU LIVE</span>. All Rights Reserved.</p>
-            <p>Developed with ❤️ by <a href="https://github.com/Arafat920" target="_blank" class="dev-link">Arafat</a></p>
-        </div>
+    <footer class="apple-footer">
+        <p>&copy; 2025 RANGDHANU LIVE. Design inspired by Apple TV.</p>
+        <p>Developed by <a href="https://github.com/Arafat920">Arafat</a></p>
     </footer>
 
     <script src="script.js"></script>
