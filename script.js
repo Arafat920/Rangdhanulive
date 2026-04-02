@@ -1,163 +1,179 @@
 const API_KEY = '0f9ff00a0afc741ccd05fcad09b52563';
 const IMG_PATH = 'https://image.tmdb.org/t/p/w1280';
 
-// API ক্যাটাগরি এবং লিঙ্কসমূহ
-const apiPaths = {
+const apiUrls = {
     home: [
-        { title: 'Trending Movies', url: `https://api.themoviedb.org/3/trending/movie/week?api_key=${API_KEY}`, type: 'movie' },
-        { title: 'Popular TV Shows', url: `https://api.themoviedb.org/3/tv/popular?api_key=${API_KEY}`, type: 'tv' },
-        { title: 'Top Rated Movies', url: `https://api.themoviedb.org/3/movie/top_rated?api_key=${API_KEY}`, type: 'movie' }
+        { title: 'Spotlight', url: `https://api.themoviedb.org/3/trending/all/week?api_key=${API_KEY}`, type: 'all' },
+        { title: 'New Releases', url: `https://api.themoviedb.org/3/movie/now_playing?api_key=${API_KEY}`, type: 'movie' },
+        { title: 'Popular Series', url: `https://api.themoviedb.org/3/tv/popular?api_key=${API_KEY}`, type: 'tv' }
     ],
-    tv: [
-        { title: 'Popular TV Series', url: `https://api.themoviedb.org/3/tv/popular?api_key=${API_KEY}`, type: 'tv' },
-        { title: 'Top Rated Series', url: `https://api.themoviedb.org/3/tv/top_rated?api_key=${API_KEY}`, type: 'tv' },
-        { title: 'On The Air', url: `https://api.themoviedb.org/3/tv/on_the_air?api_key=${API_KEY}`, type: 'tv' }
-    ],
-    movies: [
-        { title: 'Now Playing', url: `https://api.themoviedb.org/3/movie/now_playing?api_key=${API_KEY}`, type: 'movie' },
-        { title: 'Popular Movies', url: `https://api.themoviedb.org/3/movie/popular?api_key=${API_KEY}`, type: 'movie' },
-        { title: 'Upcoming Movies', url: `https://api.themoviedb.org/3/movie/upcoming?api_key=${API_KEY}`, type: 'movie' }
-    ],
-    latest: [
-        { title: 'New Arrivals', url: `https://api.themoviedb.org/3/movie/latest?api_key=${API_KEY}`, type: 'movie' },
-        { title: 'Trending Today', url: `https://api.themoviedb.org/3/trending/all/day?api_key=${API_KEY}`, type: 'all' }
-    ]
+    tv: [{ title: 'Binge-Worthy Shows', url: `https://api.themoviedb.org/3/tv/top_rated?api_key=${API_KEY}`, type: 'tv' }],
+    movies: [{ title: 'Blockbuster Movies', url: `https://api.themoviedb.org/3/movie/popular?api_key=${API_KEY}`, type: 'movie' }]
 };
 
-// ওয়েবসাইট লোড হলে হোম পেজ দেখাবে
-window.onload = () => loadContent('home');
+let myWatchlist = JSON.parse(localStorage.getItem('appleWatchlist')) || [];
 
-// মেনু এবং কন্টেন্ট লোড করার মেইন ফাংশন
-async function loadContent(category) {
-    // ১. মেনুর লাল রঙ (Active Class) হ্যান্ডেল করা
-    document.querySelectorAll('.nav-menu ul li').forEach(li => li.classList.remove('active'));
-    const activeMenu = document.getElementById(`menu-${category}`);
-    if (activeMenu) {
-        activeMenu.classList.add('active');
-    }
+window.onload = () => loadPage('home');
 
-    // ২. আগের কন্টেন্ট মুছে নতুন কন্টেন্টের জায়গা করা
+async function loadPage(page) {
+    // Navigation active state
+    document.querySelectorAll('.main-nav span').forEach(s => s.classList.remove('active'));
+    document.getElementById(`nav-${page}`)?.classList.add('active');
+
     const container = document.getElementById('rowsContainer');
     const hero = document.getElementById('hero');
-    const main = document.getElementById('mainContent');
-    const searchRes = document.getElementById('searchResults');
-    
     container.innerHTML = '';
-    searchRes.style.display = 'none';
-    main.style.display = 'block';
-    hero.style.display = 'flex';
 
-    // ৩. ক্যাটাগরি অনুযায়ী রোগুলো তৈরি করা
-    const sections = apiPaths[category];
-    
-    for (let i = 0; i < sections.length; i++) {
-        const rowId = `row-${category}-${i}`;
-        const rowHTML = `
+    if (page === 'mylist') {
+        hero.style.display = 'none';
+        renderWatchlist();
+        return;
+    }
+
+    hero.style.display = 'flex';
+    const sections = apiUrls[page];
+    for (const sec of sections) {
+        const rowId = `row-${Math.random().toString(36).substr(2, 9)}`;
+        container.innerHTML += `
             <div class="row-container">
-                <h2>${sections[i].title}</h2>
+                <h2>${sec.title}</h2>
                 <div class="row-wrapper">
-                    <button class="handle left-handle" onclick="scrollRow('${rowId}', -1)">&#10094;</button>
                     <div id="${rowId}" class="movie-row"></div>
-                    <button class="handle right-handle" onclick="scrollRow('${rowId}', 1)">&#10095;</button>
                 </div>
-            </div>
-        `;
-        container.innerHTML += rowHTML;
-        fetchData(sections[i].url, rowId, i === 0, sections[i].type);
+            </div>`;
+        fetchRowData(sec.url, rowId, sec.title === 'Spotlight', sec.type);
     }
 }
 
-// এপিআই থেকে ডাটা নিয়ে আসার ফাংশন
-async function fetchData(url, rowId, isHero, type) {
+async function fetchRowData(url, rowId, isHero, type) {
     const res = await fetch(url);
     const data = await res.json();
     const results = data.results;
-    
-    if (isHero && results.length > 0) setupHero(results[0], type);
-    
+
+    if (isHero) setupHero(results[0]);
+
     const row = document.getElementById(rowId);
     results.forEach(item => {
         if (item.poster_path) {
             const card = document.createElement('div');
             card.classList.add('movie-card');
-            card.innerHTML = `<img src="${IMG_PATH + item.poster_path}" alt="${item.title || item.name}" onclick="showDetails(${item.id}, '${type}')">`;
+            card.innerHTML = `<img src="${IMG_PATH + item.poster_path}" alt="poster" onclick="openDetails(${item.id}, '${item.media_type || type}')">`;
             row.appendChild(card);
+            // PC Scroll Enable
+            enableHorizontalScroll(row);
         }
     });
 }
 
-// হিরো ব্যানার সেটআপ করার ফাংশন
-function setupHero(item, type) {
+function setupHero(item) {
     const hero = document.getElementById('hero');
-    const heroContent = document.getElementById('heroContent');
-    hero.style.backgroundImage = `linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.8)), url(${IMG_PATH + item.backdrop_path})`;
-    heroContent.innerHTML = `
+    hero.style.backgroundImage = `url(${IMG_PATH + item.backdrop_path})`;
+    document.getElementById('heroContent').innerHTML = `
         <h1>${item.title || item.name}</h1>
-        <p>${item.overview.substring(0, 150)}...</p>
-        <button onclick="showDetails(${item.id}, '${type}')" style="padding:10px 25px; background:#e50914; color:white; border:none; cursor:pointer; font-weight:bold; border-radius:4px; margin-top:15px;">View Info</button>
+        <p>${item.overview.substring(0, 160)}...</p>
+        <button class="btn-apple btn-fill" onclick="openDetails(${item.id}, '${item.media_type || 'movie'}')">View Now</button>
     `;
 }
 
-// পপ-আপ (Modal) দেখানোর ফাংশন
-async function showDetails(id, type) {
-    const mediaType = type === 'tv' ? 'tv' : 'movie';
-    const res = await fetch(`https://api.themoviedb.org/3/${mediaType}/${id}?api_key=${API_KEY}`);
-    const item = await res.json();
-    
-    const modal = document.getElementById('movieModal');
-    const details = document.getElementById('modalDetails');
-    
-    details.innerHTML = `
-        <img class="modal-poster" src="${IMG_PATH + (item.backdrop_path || item.poster_path)}" alt="${item.title || item.name}">
-        <div class="modal-body-content">
-            <h2 class="modal-title">${item.title || item.name}</h2>
-            <div style="margin-bottom:15px; color:#aaa; font-size:14px;">
-                📅 ${item.release_date || item.first_air_date}  |  ⭐ ${item.vote_average.toFixed(1)}  |  ⏳ ${item.runtime || item.episode_run_time || '?'} min
+async function openDetails(id, type) {
+    const mType = type === 'tv' ? 'tv' : 'movie';
+    const res = await fetch(`https://api.themoviedb.org/3/${mType}/${id}?api_key=${API_KEY}`);
+    const movie = await res.json();
+
+    const isAdded = myWatchlist.some(m => m.id === movie.id);
+    const modal = document.getElementById('detailModal');
+    modal.style.display = 'flex';
+
+    document.getElementById('modalDetails').innerHTML = `
+        <div class="modal-body">
+            <img src="${IMG_PATH + movie.poster_path}" style="width:100%; border-radius:15px;">
+            <div class="modal-info">
+                <h2>${movie.title || movie.name}</h2>
+                <p style="margin-bottom:20px;">⭐ ${movie.vote_average.toFixed(1)} | ${movie.release_date || movie.first_air_date} | ${movie.runtime || movie.episode_run_time || '?'} min</p>
+                <p class="modal-overview" style="margin-bottom:30px; font-size:16px; color:#ccc;">${movie.overview}</p>
+                <button class="btn-apple btn-fill" onclick="getTrailer(${movie.id}, '${mType}')">▶ Play Trailer</button>
+                <button class="btn-apple btn-border" onclick="toggleWatchlist(${JSON.stringify(movie).replace(/"/g, '&quot;')}, '${mType}')">
+                    ${isAdded ? '✕ Remove List' : '+ Add List'}
+                </button>
             </div>
-            <p style="color:#ddd; line-height:1.6;">${item.overview}</p>
-            <button onclick="getTrailer(${item.id}, '${mediaType}')" style="margin-top:20px; padding:12px; background:#e50914; color:white; border:none; width:100%; cursor:pointer; font-weight:bold; border-radius:4px;">▶ Watch Trailer</button>
         </div>
     `;
-    modal.style.display = 'block';
 }
 
-// বাটন দিয়ে স্ক্রল করার ফাংশন
-function scrollRow(id, dir) {
-    const el = document.getElementById(id);
-    el.scrollBy({ left: dir * el.clientWidth * 0.8, behavior: 'smooth' });
+function toggleWatchlist(item, type) {
+    const idx = myWatchlist.findIndex(m => m.id === item.id);
+    if (idx > -1) {
+        myWatchlist.splice(idx, 1);
+    } else {
+        item.mType = type;
+        myWatchlist.push(item);
+    }
+    localStorage.setItem('appleWatchlist', JSON.stringify(myWatchlist));
+    closeModal();
+    if(document.getElementById('nav-mylist').classList.contains('active')) renderWatchlist();
 }
 
-// পপ-আপ বন্ধ করা
-document.querySelector('.close-modal').onclick = () => document.getElementById('movieModal').style.display = 'none';
-window.onclick = (e) => { if (e.target == document.getElementById('movieModal')) document.getElementById('movieModal').style.display = 'none'; };
+function renderWatchlist() {
+    const container = document.getElementById('rowsContainer');
+    container.innerHTML = `<div class="row-container"><h2>My Watchlist</h2><div class="search-grid"></div></div>`;
+    const grid = container.querySelector('.search-grid');
+    if (myWatchlist.length === 0) grid.innerHTML = '<p style="padding:20px; color:gray;">Your list is empty.</p>';
+    myWatchlist.forEach(item => {
+        grid.innerHTML += `<div class="movie-card"><img src="${IMG_PATH + item.poster_path}" onclick="openDetails(${item.id}, '${item.mType}')"></div>`;
+    });
+}
 
-// ট্রেলার খোঁজার ফাংশন
+// Advanced Voice Search Logic
+const voiceBtn = document.getElementById('voiceBtn');
+const recognition = window.SpeechRecognition || window.webkitSpeechRecognition ? new (window.SpeechRecognition || window.webkitSpeechRecognition)() : null;
+
+if (recognition) {
+    recognition.onstart = () => voiceBtn.classList.add('listening');
+    recognition.onend = () => voiceBtn.classList.remove('listening');
+    recognition.onresult = (event) => {
+        const query = event.results[0][0].transcript;
+        document.getElementById('searchInput').value = query;
+        performSearch(query);
+    };
+}
+
+voiceBtn.onclick = () => {
+    if (recognition) recognition.start();
+    else alert("Voice recognition not supported in this browser.");
+};
+
+document.getElementById('searchBtn').onclick = () => performSearch(document.getElementById('searchInput').value);
+
+async function performSearch(query) {
+    if (!query) return;
+    const res = await fetch(`https://api.themoviedb.org/3/search/multi?api_key=${API_KEY}&query=${query}`);
+    const data = await res.json();
+    const results = data.results;
+
+    document.getElementById('searchResults').style.display = 'block';
+    const grid = document.getElementById('searchGrid');
+    grid.innerHTML = '';
+    results.forEach(item => {
+        if (item.poster_path) {
+            grid.innerHTML += `<div class="movie-card"><img src="${IMG_PATH + item.poster_path}" onclick="openDetails(${item.id}, '${item.media_type}')"></div>`;
+        }
+    });
+}
+
+function closeSearch() { document.getElementById('searchResults').style.display = 'none'; }
+function closeModal() { document.getElementById('detailModal').style.display = 'none'; }
+
 async function getTrailer(id, type) {
     const res = await fetch(`https://api.themoviedb.org/3/${type}/${id}/videos?api_key=${API_KEY}`);
     const data = await res.json();
     const trailer = data.results.find(v => v.type === 'Trailer');
-    if (trailer) window.open(`https://www.youtube.com/watch?v=${trailer.key}`, '_blank');
+    if (trailer) window.open(`https://www.youtube.com/watch?v=${trailer.key}`);
     else alert("Trailer not found!");
 }
 
-// সার্চ করার ফাংশন
-document.getElementById('searchBtn').addEventListener('click', async () => {
-    const query = document.getElementById('searchInput').value;
-    if (query) {
-        const res = await fetch(`https://api.themoviedb.org/3/search/multi?api_key=${API_KEY}&query=${query}`);
-        const data = await res.json();
-        const searchRes = document.getElementById('searchResults');
-        document.getElementById('mainContent').style.display = 'none';
-        document.getElementById('hero').style.display = 'none';
-        searchRes.style.display = 'grid';
-        searchRes.innerHTML = '';
-        data.results.forEach(item => {
-            if (item.poster_path) {
-                const card = document.createElement('div');
-                card.classList.add('movie-card');
-                card.innerHTML = `<img src="${IMG_PATH + item.poster_path}" alt="${item.title || item.name}" onclick="showDetails(${item.id}, '${item.media_type}')">`;
-                searchRes.appendChild(card);
-            }
-        });
-    }
-});
+function enableHorizontalScroll(el) {
+    el.addEventListener('wheel', (e) => {
+        e.preventDefault();
+        el.scrollLeft += e.deltaY;
+    });
+}
