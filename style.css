@@ -52,4 +52,11 @@ footer { background: #000; padding: 40px 0; text-align: center; border-top: 1px 
     .hero { height: 50vh; }
     .hero-content h1 { font-size: 28px; }
     .search-container input { width: 100px; }
+    
+    /* Active Menu Style */
+.nav-menu ul li.active {
+    color: #e50914 !important; /* লাল রঙ */
+    font-weight: bold;
+    border-bottom: 2px solid #e50914; /* নিচে একটি লাল দাগ (ঐচ্ছিক) */
+    padding-bottom: 2px;
 }
