@@ -1,62 +1,72 @@
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: 'Arial', sans-serif; background-color: #111; color: #fff; overflow-x: hidden; }
+:root {
+    --apple-red: #ff3b30;
+    --glass-bg: rgba(25, 25, 25, 0.7);
+    --bg-dark: #000000;
+    --text-main: #ffffff;
+    --text-dim: rgba(255, 255, 255, 0.6);
+}
 
-/* Header & Nav Styling */
-header { display: flex; justify-content: space-between; align-items: center; padding: 10px 4%; background: rgba(0,0,0,0.9); position: fixed; width: 100%; z-index: 1000; transition: background 0.3s; }
-.header-left { display: flex; align-items: center; gap: 30px; }
-.logo { color: #e50914; cursor: pointer; font-size: 22px; font-weight: bold; }
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-font-smoothing: antialiased; }
+body { font-family: 'Inter', sans-serif; background: var(--bg-dark); color: var(--text-main); overflow-x: hidden; }
 
-.nav-menu ul { display: flex; list-style: none; gap: 20px; }
-.nav-menu ul li { cursor: pointer; font-size: 14px; color: #e5e5e5; transition: 0.3s; }
-.nav-menu ul li:hover { color: #fff; transform: scale(1.05); }
+/* Apple Style Glass Navigation */
+header {
+    position: fixed; top: 0; width: 100%; z-index: 2000;
+    padding: 15px 5%; display: flex; transition: 0.5s;
+}
+.glass-nav { background: rgba(0,0,0,0.4); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); border-bottom: 0.5px solid rgba(255,255,255,0.1); }
+.nav-content { display: flex; width: 100%; align-items: center; justify-content: space-between; }
+.logo { font-weight: 800; font-size: 24px; color: var(--apple-red); letter-spacing: -1px; cursor: pointer; }
 
-.search-container input { padding: 6px 10px; border-radius: 4px; border: 1px solid #444; background: #000; color: #fff; width: 120px; font-size: 13px; }
-.search-container button { background: none; border: none; font-size: 16px; cursor: pointer; margin-left: 5px; }
+.main-nav span { margin: 0 15px; font-size: 15px; font-weight: 500; color: var(--text-dim); cursor: pointer; transition: 0.3s; }
+.main-nav span:hover, .main-nav span.active { color: #fff; }
+.main-nav span.active { transform: scale(1.1); font-weight: 700; }
 
-/* Hero Banner */
-.hero { height: 65vh; background-size: cover; background-position: center; display: flex; align-items: center; padding: 0 4%; position: relative; }
-.hero::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 120px; background: linear-gradient(to top, #111, transparent); }
-.hero-content { max-width: 600px; z-index: 1; text-shadow: 2px 2px 10px rgba(0,0,0,0.8); }
-.hero-content h1 { font-size: 40px; margin-bottom: 10px; }
+.search-wrapper { display: flex; align-items: center; background: rgba(255,255,255,0.1); border-radius: 20px; padding: 5px 15px; }
+#searchInput { background: transparent; border: none; color: #fff; padding: 5px; outline: none; width: 180px; font-size: 14px; }
+.voice-btn, .search-btn { background: none; border: none; font-size: 18px; cursor: pointer; margin-left: 8px; filter: grayscale(1); transition: 0.3s; }
+.voice-btn:hover { filter: grayscale(0); transform: scale(1.2); }
+.voice-btn.listening { animation: pulse 1.5s infinite; filter: grayscale(0); }
+
+@keyframes pulse { 0% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.3); opacity: 0.7; } 100% { transform: scale(1); opacity: 1; } }
+
+/* Hero Section - Apple Spotlight */
+.hero-section { height: 85vh; width: 100%; background-size: cover; background-position: center; display: flex; align-items: flex-end; position: relative; }
+.hero-section::before { content: ''; position: absolute; inset: 0; background: linear-gradient(to top, #000, transparent 60%); }
+.hero-inner { padding: 0 5% 60px; z-index: 10; max-width: 800px; }
+.hero-inner h1 { font-size: clamp(40px, 6vw, 70px); font-weight: 800; letter-spacing: -2px; line-height: 1; margin-bottom: 20px; }
+.hero-inner p { color: var(--text-dim); font-size: 18px; line-height: 1.5; margin-bottom: 25px; }
 
 /* Row Styling */
-.row-container { margin: 25px 0 25px 4%; position: relative; }
-.row-container h2 { font-size: 20px; margin-bottom: 10px; color: #fff; }
-.row-wrapper { position: relative; display: flex; align-items: center; }
-
-.movie-row { display: flex; overflow-x: scroll; gap: 10px; padding: 10px 0; scroll-behavior: smooth; width: 100%; }
+.row-container { margin: 40px 0 0 5%; }
+.row-container h2 { font-size: 22px; font-weight: 600; margin-bottom: 15px; }
+.row-wrapper { position: relative; overflow: visible; }
+.movie-row { display: flex; gap: 20px; overflow-x: auto; scroll-behavior: smooth; padding: 10px 0 30px; }
 .movie-row::-webkit-scrollbar { display: none; }
 
-.movie-card { min-width: 150px; cursor: pointer; transition: transform 0.3s; border-radius: 8px; overflow: hidden; }
-.movie-card:hover { transform: scale(1.1); z-index: 5; }
-.movie-card img { width: 100%; display: block; border-radius: 8px; }
+.movie-card { min-width: 200px; border-radius: 12px; overflow: hidden; cursor: pointer; transition: 0.5s cubic-bezier(0.2, 1, 0.2, 1); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+.movie-card:hover { transform: scale(1.1); box-shadow: 0 20px 40px rgba(0,0,0,0.8); z-index: 100; }
+.movie-card img { width: 100%; border-radius: 12px; }
 
-/* Netflix Buttons (Handles) */
-.handle { position: absolute; top: 0; bottom: 0; width: 40px; background: rgba(0, 0, 0, 0.5); color: white; border: none; font-size: 24px; cursor: pointer; z-index: 10; display: none; }
-.row-wrapper:hover .handle { display: block; }
-.handle:hover { background: rgba(0, 0, 0, 0.8); }
-.left-handle { left: 0; } .right-handle { right: 0; }
+/* Modal Glassmorphism */
+.modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 3000; backdrop-filter: blur(10px); display: none; align-items: center; justify-content: center; }
+.modal-content { width: 90%; max-width: 900px; border-radius: 30px; overflow: hidden; animation: modalIn 0.5s; }
+.glass-card { background: rgba(30, 30, 30, 0.8); border: 1px solid rgba(255,255,255,0.15); box-shadow: 0 30px 60px rgba(0,0,0,0.5); }
+.close-modal { position: absolute; top: 20px; right: 25px; font-size: 24px; cursor: pointer; color: #fff; z-index: 10; }
 
-/* Modal & Search Grid (Same as before) */
-.modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); padding-top: 50px; }
-.modal-content { background: #181818; margin: auto; width: 90%; max-width: 700px; border-radius: 10px; position: relative; }
-.close-modal { position: absolute; top: 15px; right: 20px; font-size: 30px; cursor: pointer; color: white; }
-.modal-body-content { padding: 20px; }
-.search-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 15px; padding: 100px 4% 20px; }
+.modal-body { display: grid; grid-template-columns: 1fr 1.2fr; gap: 30px; padding: 40px; }
+.modal-info h2 { font-size: 32px; font-weight: 800; margin-bottom: 15px; color: var(--apple-red); }
+.btn-apple { padding: 12px 30px; border-radius: 10px; border: none; font-weight: 600; cursor: pointer; margin-right: 10px; transition: 0.3s; }
+.btn-fill { background: #fff; color: #000; }
+.btn-border { background: rgba(255,255,255,0.1); color: #fff; border: 1px solid rgba(255,255,255,0.2); }
+.btn-apple:hover { opacity: 0.8; transform: translateY(-2px); }
 
-/* Footer */
-footer { background: #000; padding: 40px 0; text-align: center; border-top: 1px solid #333; margin-top: 50px; }
+/* Advanced Search Overlay */
+.search-overlay { position: fixed; inset: 0; background: #000; z-index: 4000; padding: 100px 5% 50px; overflow-y: auto; }
+.search-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 25px; }
+.close-search { position: fixed; top: 30px; right: 5%; background: none; border: none; color: #fff; font-size: 30px; cursor: pointer; }
 
-@media (max-width: 768px) {
-    .nav-menu { display: none; } /* মোবাইলে মেনু হাইড করা (পরবর্তীতে হ্যামবার্গার যোগ করা যাবে) */
-    .hero { height: 50vh; }
-    .hero-content h1 { font-size: 28px; }
-    .search-container input { width: 100px; }
-    
-    /* Active Menu Style */
-.nav-menu ul li.active {
-    color: #e50914 !important; /* লাল রঙ */
-    font-weight: bold;
-    border-bottom: 2px solid #e50914; /* নিচে একটি লাল দাগ (ঐচ্ছিক) */
-    padding-bottom: 2px;
-}
+footer { padding: 80px 0 40px; text-align: center; border-top: 1px solid rgba(255,255,255,0.05); }
+footer a { color: var(--apple-red); text-decoration: none; }
+
+@keyframes modalIn { from { transform: scale(0.85); opacity: 0; } to { transform: scale(1); opacity: 1; } }
