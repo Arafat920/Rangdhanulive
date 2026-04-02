@@ -1,7 +1,7 @@
 const API_KEY = '0f9ff00a0afc741ccd05fcad09b52563';
 const IMG_PATH = 'https://image.tmdb.org/t/p/w1280';
 
-// API Endpoints for Categories
+// API ক্যাটাগরি এবং লিঙ্কসমূহ
 const apiPaths = {
     home: [
         { title: 'Trending Movies', url: `https://api.themoviedb.org/3/trending/movie/week?api_key=${API_KEY}`, type: 'movie' },
@@ -24,9 +24,19 @@ const apiPaths = {
     ]
 };
 
+// ওয়েবসাইট লোড হলে হোম পেজ দেখাবে
 window.onload = () => loadContent('home');
 
+// মেনু এবং কন্টেন্ট লোড করার মেইন ফাংশন
 async function loadContent(category) {
+    // ১. মেনুর লাল রঙ (Active Class) হ্যান্ডেল করা
+    document.querySelectorAll('.nav-menu ul li').forEach(li => li.classList.remove('active'));
+    const activeMenu = document.getElementById(`menu-${category}`);
+    if (activeMenu) {
+        activeMenu.classList.add('active');
+    }
+
+    // ২. আগের কন্টেন্ট মুছে নতুন কন্টেন্টের জায়গা করা
     const container = document.getElementById('rowsContainer');
     const hero = document.getElementById('hero');
     const main = document.getElementById('mainContent');
@@ -37,6 +47,7 @@ async function loadContent(category) {
     main.style.display = 'block';
     hero.style.display = 'flex';
 
+    // ৩. ক্যাটাগরি অনুযায়ী রোগুলো তৈরি করা
     const sections = apiPaths[category];
     
     for (let i = 0; i < sections.length; i++) {
@@ -56,12 +67,13 @@ async function loadContent(category) {
     }
 }
 
+// এপিআই থেকে ডাটা নিয়ে আসার ফাংশন
 async function fetchData(url, rowId, isHero, type) {
     const res = await fetch(url);
     const data = await res.json();
     const results = data.results;
     
-    if (isHero) setupHero(results[0], type);
+    if (isHero && results.length > 0) setupHero(results[0], type);
     
     const row = document.getElementById(rowId);
     results.forEach(item => {
@@ -74,6 +86,7 @@ async function fetchData(url, rowId, isHero, type) {
     });
 }
 
+// হিরো ব্যানার সেটআপ করার ফাংশন
 function setupHero(item, type) {
     const hero = document.getElementById('hero');
     const heroContent = document.getElementById('heroContent');
@@ -85,8 +98,8 @@ function setupHero(item, type) {
     `;
 }
 
+// পপ-আপ (Modal) দেখানোর ফাংশন
 async function showDetails(id, type) {
-    // TMDB uses /movie/ for movies and /tv/ for series
     const mediaType = type === 'tv' ? 'tv' : 'movie';
     const res = await fetch(`https://api.themoviedb.org/3/${mediaType}/${id}?api_key=${API_KEY}`);
     const item = await res.json();
@@ -108,13 +121,17 @@ async function showDetails(id, type) {
     modal.style.display = 'block';
 }
 
+// বাটন দিয়ে স্ক্রল করার ফাংশন
 function scrollRow(id, dir) {
     const el = document.getElementById(id);
     el.scrollBy({ left: dir * el.clientWidth * 0.8, behavior: 'smooth' });
 }
 
+// পপ-আপ বন্ধ করা
 document.querySelector('.close-modal').onclick = () => document.getElementById('movieModal').style.display = 'none';
+window.onclick = (e) => { if (e.target == document.getElementById('movieModal')) document.getElementById('movieModal').style.display = 'none'; };
 
+// ট্রেলার খোঁজার ফাংশন
 async function getTrailer(id, type) {
     const res = await fetch(`https://api.themoviedb.org/3/${type}/${id}/videos?api_key=${API_KEY}`);
     const data = await res.json();
@@ -123,7 +140,7 @@ async function getTrailer(id, type) {
     else alert("Trailer not found!");
 }
 
-// Search Logic
+// সার্চ করার ফাংশন
 document.getElementById('searchBtn').addEventListener('click', async () => {
     const query = document.getElementById('searchInput').value;
     if (query) {
